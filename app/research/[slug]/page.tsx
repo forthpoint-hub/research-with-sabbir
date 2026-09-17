@@ -1,17 +1,19 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { research, getResearchBySlug } from "@/data/research";
+import { getAllResearch, getResearchBySlug } from "@/data/research";
 import ResearchAction from "@/components/research/ResearchAction";
 import ResearchCard from "@/components/research/ResearchCard";
 import Badge from "@/components/ui/Badge";
 import { buildMetadata, SITE_URL } from "@/lib/metadata";
 
-export function generateStaticParams() {
-  return research.map((item) => ({ slug: item.slug }));
-}
+export const dynamic = "force-dynamic";
 
-export function generateMetadata({ params }: { params: { slug: string } }) {
-  const item = getResearchBySlug(params.slug);
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const item = await getResearchBySlug(params.slug);
   if (!item) return buildMetadata({ title: "Research not found" });
 
   return buildMetadata({
@@ -21,15 +23,16 @@ export function generateMetadata({ params }: { params: { slug: string } }) {
   });
 }
 
-export default function ResearchDetailPage({
+export default async function ResearchDetailPage({
   params,
 }: {
   params: { slug: string };
 }) {
-  const item = getResearchBySlug(params.slug);
+  const item = await getResearchBySlug(params.slug);
   if (!item) return notFound();
 
-  const related = research
+  const allResearch = await getAllResearch();
+  const related = allResearch
     .filter((r) => r.slug !== item.slug && r.category === item.category)
     .slice(0, 3);
 
@@ -139,6 +142,7 @@ export default function ResearchDetailPage({
 }
 
 function formatDate(iso: string) {
+  if (!iso) return "";
   return new Date(iso).toLocaleDateString("en-US", {
     day: "numeric",
     month: "short",

@@ -1,6 +1,8 @@
 import ResearchFilters from "@/components/research/ResearchFilters";
-import { research } from "@/data/research";
+import { getAllResearch } from "@/data/research";
 import { buildMetadata } from "@/lib/metadata";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = buildMetadata({
   title: "Research Library",
@@ -9,7 +11,9 @@ export const metadata = buildMetadata({
   path: "/research",
 });
 
-export default function ResearchLibraryPage() {
+export default async function ResearchLibraryPage() {
+  const research = await getAllResearch();
+
   return (
     <section className="container-page py-16">
       <p className="label-eyebrow">Research Library</p>

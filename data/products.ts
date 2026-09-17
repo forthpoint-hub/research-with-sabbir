@@ -1,35 +1,39 @@
+import { supabase } from "@/lib/supabaseClient";
 import { Product } from "@/types/content";
 
-// SAMPLE CONTENT — replace with your real digital products.
-// checkoutUrl should point to your external checkout (e.g. Gumroad).
-
-export const products: Product[] = [
-  {
-    id: "1",
-    slug: "sample-competitor-report",
-    title: "Competitor X-Ray Report",
-    description:
-      "Replace with a description of what the buyer receives — scope, format, and depth.",
-    price: "$99",
+function mapRow(row: any): Product {
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    description: row.description ?? "",
+    price: row.price ?? "",
     coverImage: "",
-    checkoutUrl: "https://gumroad.com/l/replace-with-your-checkout-link",
-    category: "Competitor Research",
-    featured: true,
-  },
-  {
-    id: "2",
-    slug: "sample-research-template",
-    title: "Market Research Template",
-    description:
-      "Replace with a description of the template — what it helps the buyer produce.",
-    price: "$25",
-    coverImage: "",
-    checkoutUrl: "https://gumroad.com/l/replace-with-your-checkout-link",
-    category: "Template",
-    featured: false,
-  },
-];
+    checkoutUrl: row.checkout_url ?? "",
+    category: row.category ?? "",
+    featured: Boolean(row.featured),
+  };
+}
 
-export function getProductBySlug(slug: string) {
-  return products.find((item) => item.slug === slug);
+export async function getAllProducts(): Promise<Product[]> {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error || !data) return [];
+  return data.map(mapRow);
+}
+
+export async function getProductBySlug(
+  slug: string
+): Promise<Product | undefined> {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .eq("slug", slug)
+    .maybeSingle();
+
+  if (error || !data) return undefined;
+  return mapRow(data);
 }

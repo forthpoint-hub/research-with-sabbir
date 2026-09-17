@@ -1,8 +1,8 @@
 import { MetadataRoute } from "next";
-import { research } from "@/data/research";
+import { getAllResearch } from "@/data/research";
 import { SITE_URL } from "@/lib/metadata";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes = [
     "",
     "/research",
@@ -17,9 +17,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(),
   }));
 
+  const research = await getAllResearch();
   const researchRoutes = research.map((item) => ({
     url: `${SITE_URL}/research/${item.slug}`,
-    lastModified: item.publicationDate,
+    lastModified: item.publicationDate || new Date().toISOString(),
   }));
 
   return [...staticRoutes, ...researchRoutes];

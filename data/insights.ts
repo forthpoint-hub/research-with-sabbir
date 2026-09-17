@@ -1,23 +1,40 @@
+import { supabase } from "@/lib/supabaseClient";
 import { Insight } from "@/types/content";
 
-// SAMPLE CONTENT — replace with your real short-form insights.
-
-export const insights: Insight[] = [
-  {
-    id: "1",
-    slug: "sample-insight",
-    title: "Sample Insight Title Goes Here",
-    summary: "Replace with a one-sentence summary of the insight.",
-    content:
-      "Replace this placeholder with your real insight content, written as plain paragraphs separated by blank lines.",
-    category: "Consumer Behavior",
-    publicationDate: "2026-09-05",
-    readingTime: "5 min",
+function mapRow(row: any): Insight {
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    summary: row.summary ?? "",
+    content: row.content ?? "",
+    category: row.category ?? "",
+    publicationDate: row.publication_date ?? "",
+    readingTime: row.reading_time ?? "",
     coverImage: "",
-    featured: true,
-  },
-];
+    featured: Boolean(row.featured),
+  };
+}
 
-export function getInsightBySlug(slug: string) {
-  return insights.find((item) => item.slug === slug);
+export async function getAllInsights(): Promise<Insight[]> {
+  const { data, error } = await supabase
+    .from("insights")
+    .select("*")
+    .order("publication_date", { ascending: false });
+
+  if (error || !data) return [];
+  return data.map(mapRow);
+}
+
+export async function getInsightBySlug(
+  slug: string
+): Promise<Insight | undefined> {
+  const { data, error } = await supabase
+    .from("insights")
+    .select("*")
+    .eq("slug", slug)
+    .maybeSingle();
+
+  if (error || !data) return undefined;
+  return mapRow(data);
 }

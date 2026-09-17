@@ -1,17 +1,19 @@
-# Research With Sabbir — V1
+# Research With Sabbir — V2
 
-Next.js + TypeScript + Tailwind site for Research With Sabbir.
+Next.js + TypeScript + Tailwind site, backed by Supabase (database, auth,
+file storage) with an admin dashboard for managing content.
 
-## Adding content
+## Managing content
 
-- **Research reports:** add an object to `data/research.ts`. For a free
-  report, drop the PDF in `public/reports/` and set `pdfUrl`. For a
-  premium report, set `externalUrl` to your checkout link.
-- **Products:** add an object to `data/products.ts` with a `checkoutUrl`.
-- **Insights:** add an object to `data/insights.ts`.
+Go to `/admin` on the live site, log in with the admin account created in
+Supabase, and use the dashboard to add/edit/delete:
 
-No other code changes are needed to publish new content — the pages read
-directly from these files.
+- Research reports (with PDF upload for free reports)
+- Products (with external checkout links)
+- Insights
+
+No code changes or GitHub pushes are needed to publish content — changes
+appear on the live site within a few seconds.
 
 ## Local development
 
@@ -25,5 +27,7 @@ npm run dev
 This project deploys on Vercel. Push to GitHub, then import the repo in
 Vercel — it builds automatically on every push to the main branch.
 
-Before your first deploy, open `lib/metadata.ts` and update `SITE_URL`
-once you know your real Vercel URL (or custom domain).
+The Supabase project URL and anon key are set directly in
+`lib/supabaseClient.ts` (Supabase's anon key is designed to be public;
+access control is handled by Row Level Security policies on each table,
+not by hiding this key).

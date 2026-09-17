@@ -1,6 +1,8 @@
-import { insights } from "@/data/insights";
+import { getAllInsights } from "@/data/insights";
 import InsightCard from "@/components/research/InsightCard";
 import { buildMetadata } from "@/lib/metadata";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = buildMetadata({
   title: "Insights",
@@ -8,7 +10,9 @@ export const metadata = buildMetadata({
   path: "/insights",
 });
 
-export default function InsightsPage() {
+export default async function InsightsPage() {
+  const insights = await getAllInsights();
+
   return (
     <section className="container-page py-16">
       <p className="label-eyebrow">Editorial</p>
@@ -19,7 +23,7 @@ export default function InsightsPage() {
       <div className="mt-10 max-w-prose">
         {insights.length === 0 ? (
           <p className="text-sm text-paper-dim">
-            No insights yet — add items in data/insights.ts.
+            No insights yet — add them in the admin dashboard.
           </p>
         ) : (
           insights.map((item) => <InsightCard key={item.id} item={item} />)

@@ -1,16 +1,23 @@
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import ResearchCard from "@/components/research/ResearchCard";
-import { research } from "@/data/research";
-import { insights } from "@/data/insights";
+import { getAllResearch } from "@/data/research";
+import { getAllInsights } from "@/data/insights";
 import { buildMetadata } from "@/lib/metadata";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = buildMetadata({
   title: "Bangladesh Market & Business Research",
   path: "/",
 });
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [research, insights] = await Promise.all([
+    getAllResearch(),
+    getAllInsights(),
+  ]);
+
   const featuredResearch = research.filter((r) => r.featured).slice(0, 4);
   const latestInsights = insights.slice(0, 3);
 
@@ -54,7 +61,7 @@ export default function HomePage() {
 
         {featuredResearch.length === 0 ? (
           <p className="text-sm text-paper-dim">
-            No featured research yet — add items in data/research.ts.
+            No featured research yet — add reports in the admin dashboard.
           </p>
         ) : (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -100,7 +107,7 @@ export default function HomePage() {
 
         {latestInsights.length === 0 ? (
           <p className="text-sm text-paper-dim">
-            No insights yet — add items in data/insights.ts.
+            No insights yet — add them in the admin dashboard.
           </p>
         ) : (
           <div>

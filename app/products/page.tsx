@@ -1,7 +1,9 @@
-import { products } from "@/data/products";
+import { getAllProducts } from "@/data/products";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 import { buildMetadata } from "@/lib/metadata";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = buildMetadata({
   title: "Products",
@@ -9,7 +11,9 @@ export const metadata = buildMetadata({
   path: "/products",
 });
 
-export default function ProductsPage() {
+export default async function ProductsPage() {
+  const products = await getAllProducts();
+
   return (
     <section className="container-page py-16">
       <p className="label-eyebrow">Digital Products</p>
@@ -23,7 +27,7 @@ export default function ProductsPage() {
 
       {products.length === 0 ? (
         <p className="mt-10 text-sm text-paper-dim">
-          No products yet — add items in data/products.ts.
+          No products yet — add them in the admin dashboard.
         </p>
       ) : (
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
