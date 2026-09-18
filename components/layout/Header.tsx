@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getAllPublishedPages } from "@/data/pages";
 
 const NAV = [
   { href: "/research", label: "Research" },
@@ -9,7 +10,13 @@ const NAV = [
   { href: "/about", label: "About" },
 ];
 
-export default function Header() {
+export default async function Header() {
+  const customPages = await getAllPublishedPages();
+  const nav = [
+    ...NAV,
+    ...customPages.map((p) => ({ href: `/${p.slug}`, label: p.title })),
+  ];
+
   return (
     <header className="border-b border-line">
       <div className="container-page flex h-16 items-center justify-between">
@@ -21,7 +28,7 @@ export default function Header() {
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex">
-          {NAV.map((item) => (
+          {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -42,7 +49,7 @@ export default function Header() {
 
       {/* Simple mobile nav — visible on small screens, no JS needed */}
       <div className="container-page flex gap-4 overflow-x-auto pb-3 md:hidden">
-        {NAV.map((item) => (
+        {nav.map((item) => (
           <Link
             key={item.href}
             href={item.href}

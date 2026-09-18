@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import AuthGate from "@/components/admin/AuthGate";
 import { supabase } from "@/lib/supabaseClient";
 
-function ProductsList() {
+export default function ProductsList() {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -30,7 +29,7 @@ function ProductsList() {
   }
 
   return (
-    <section className="container-page max-w-3xl py-16">
+    <section className="container-page max-w-3xl py-10">
       <div className="flex items-center justify-between">
         <h1 className="font-serif text-2xl text-paper">Products</h1>
         <Link
@@ -49,10 +48,7 @@ function ProductsList() {
         ) : (
           <div className="divide-y divide-line border-t border-line">
             {items.map((item) => (
-              <div
-                key={item.id}
-                className="flex items-center justify-between gap-4 py-4"
-              >
+              <div key={item.id} className="flex items-center justify-between gap-4 py-4">
                 <div className="min-w-0">
                   <p className="truncate text-paper">{item.title}</p>
                   <p className="text-xs text-paper-dim">
@@ -60,16 +56,10 @@ function ProductsList() {
                   </p>
                 </div>
                 <div className="flex shrink-0 gap-4 text-sm">
-                  <Link
-                    href={`/admin/products/${item.id}`}
-                    className="text-gold no-underline"
-                  >
+                  <Link href={`/admin/products/${item.id}`} className="text-gold no-underline">
                     Edit
                   </Link>
-                  <button
-                    onClick={() => handleDelete(item.id)}
-                    className="text-alert"
-                  >
+                  <button onClick={() => handleDelete(item.id)} className="text-alert">
                     Delete
                   </button>
                 </div>
@@ -78,21 +68,6 @@ function ProductsList() {
           </div>
         )}
       </div>
-
-      <Link
-        href="/admin"
-        className="mt-10 inline-block text-sm text-paper-dim no-underline hover:text-paper"
-      >
-        Back to dashboard
-      </Link>
     </section>
-  );
-}
-
-export default function AdminProductsPage() {
-  return (
-    <AuthGate>
-      <ProductsList />
-    </AuthGate>
   );
 }

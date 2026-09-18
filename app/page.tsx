@@ -3,6 +3,7 @@ import Button from "@/components/ui/Button";
 import ResearchCard from "@/components/research/ResearchCard";
 import { getAllResearch } from "@/data/research";
 import { getAllInsights } from "@/data/insights";
+import { getSiteContent } from "@/data/siteContent";
 import { buildMetadata } from "@/lib/metadata";
 
 export const dynamic = "force-dynamic";

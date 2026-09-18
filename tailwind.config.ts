@@ -11,13 +11,13 @@ const config: Config = {
         line: "#2A3242",
         paper: "#EDEAE1",
         "paper-dim": "#A9AEBE",
-        gold: "#C99A4B",
+        gold: "var(--color-accent, #C99A4B)",
         signal: "#4FA490",
         alert: "#C96B4B",
       },
       fontFamily: {
-        serif: ["'Source Serif 4'", "Georgia", "serif"],
-        sans: ["'IBM Plex Sans'", "system-ui", "sans-serif"],
+        serif: ["var(--font-serif)", "Georgia", "serif"],
+        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         mono: ["'IBM Plex Mono'", "monospace"],
       },
       maxWidth: {

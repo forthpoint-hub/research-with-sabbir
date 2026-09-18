@@ -1,5 +1,8 @@
 import ContactForm from "@/components/ContactForm";
+import { getSiteContent } from "@/data/siteContent";
 import { buildMetadata } from "@/lib/metadata";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = buildMetadata({
   title: "Contact",
@@ -7,7 +10,9 @@ export const metadata = buildMetadata({
   path: "/contact",
 });
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const email = (await getSiteContent("contact_email")) || "md.sabbir26@hotmail.com";
+
   return (
     <section className="container-page max-w-2xl py-16">
       <p className="label-eyebrow">Work With Me</p>
@@ -19,7 +24,7 @@ export default function ContactPage() {
         back to you about scope and timeline.
       </p>
 
-      <ContactForm />
+      <ContactForm contactEmail={email} />
     </section>
   );
 }

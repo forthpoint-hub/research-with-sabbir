@@ -2,7 +2,15 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import PageViewTracker from "@/components/PageViewTracker";
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/metadata";
+import { getSiteContent } from "@/data/siteContent";
+import { getFontPairing } from "@/lib/theme";
+
+// The Header fetches CMS-created pages, and this layout fetches
+// Appearance settings, from Supabase — force the whole app dynamic
+// so changes show without needing a new deploy.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -24,13 +32,29 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [accentColor, fontPairingId] = await Promise.all([
+    getSiteContent("theme_accent_color"),
+    getSiteContent("theme_font_pairing"),
+  ]);
+
+  const pairing = getFontPairing(fontPairingId || "editorial");
+
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      style={
+        {
+          "--color-accent": accentColor || "#C99A4B",
+          "--font-serif": pairing.serifVar,
+          "--font-sans": pairing.sansVar,
+        } as React.CSSProperties
+      }
+    >
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -38,12 +62,10 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
-          rel="stylesheet"
-        />
+        <link href={pairing.googleFontsHref} rel="stylesheet" />
       </head>
       <body>
+        <PageViewTracker />
         <Header />
         <main>{children}</main>
         <Footer />

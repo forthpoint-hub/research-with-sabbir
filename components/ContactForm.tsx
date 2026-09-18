@@ -1,8 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-
-const CONTACT_EMAIL = "md.sabbir26@hotmail.com";
+import { supabase } from "@/lib/supabaseClient";
 
 const FIELDS: { name: string; label: string; type?: string; required?: boolean }[] = [
   { name: "name", label: "Name", required: true },
@@ -19,27 +18,52 @@ export default function ContactForm() {
   const [values, setValues] = useState<Record<string, string>>({});
   const [question, setQuestion] = useState("");
   const [additional, setAdditional] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
   function handleChange(name: string, value: string) {
     setValues((prev) => ({ ...prev, [name]: value }));
   }
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    setSubmitting(true);
+    setError("");
 
-    const subject = `Research inquiry — ${values.name ?? "New contact"}`;
-    const bodyLines = [
-      ...FIELDS.map((f) => `${f.label}: ${values[f.name] ?? ""}`),
-      `Research question: ${question}`,
-      `Additional information: ${additional}`,
-    ];
-    const body = bodyLines.join("\n");
+    const { error: submitError } = await supabase.from("contact_submissions").insert({
+      name: values.name ?? "",
+      email: values.email ?? "",
+      company: values.company ?? "",
+      country: values.country ?? "",
+      industry: values.industry ?? "",
+      topic: values.topic ?? "",
+      budget: values.budget ?? "",
+      timeline: values.timeline ?? "",
+      question,
+      additional_info: additional,
+    });
 
-    const mailto = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
-      subject
-    )}&body=${encodeURIComponent(body)}`;
+    setSubmitting(false);
 
-    window.location.href = mailto;
+    if (submitError) {
+      setError("Something went wrong — please try again in a moment.");
+      return;
+    }
+
+    setSubmitted(true);
+  }
+
+  if (submitted) {
+    return (
+      <div className="mt-10 border border-line bg-ink-soft p-6">
+        <p className="font-serif text-lg text-paper">Thanks — got it.</p>
+        <p className="mt-2 text-sm text-paper-dim">
+          Your inquiry has been received. I&apos;ll get back to you about
+          scope and timeline soon.
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -47,10 +71,7 @@ export default function ContactForm() {
       <div className="grid gap-6 sm:grid-cols-2">
         {FIELDS.map((field) => (
           <div key={field.name}>
-            <label
-              htmlFor={field.name}
-              className="mb-1 block text-sm text-paper-dim"
-            >
+            <label htmlFor={field.name} className="mb-1 block text-sm text-paper-dim">
               {field.label}
               {field.required ? " *" : ""}
             </label>
@@ -81,10 +102,7 @@ export default function ContactForm() {
       </div>
 
       <div>
-        <label
-          htmlFor="additional"
-          className="mb-1 block text-sm text-paper-dim"
-        >
+        <label htmlFor="additional" className="mb-1 block text-sm text-paper-dim">
           Additional information
         </label>
         <textarea
@@ -96,16 +114,15 @@ export default function ContactForm() {
         />
       </div>
 
+      {error && <p className="text-sm text-alert">{error}</p>}
+
       <button
         type="submit"
-        className="rounded-sm bg-gold px-5 py-2.5 text-sm text-ink transition-colors hover:bg-gold/90"
+        disabled={submitting}
+        className="rounded-sm bg-gold px-5 py-2.5 text-sm text-ink transition-colors hover:bg-gold/90 disabled:opacity-50"
       >
-        Send inquiry
+        {submitting ? "Sending\u2026" : "Send inquiry"}
       </button>
-      <p className="text-xs text-paper-dim">
-        This opens your email app with the details pre-filled, addressed to{" "}
-        {CONTACT_EMAIL}.
-      </p>
     </form>
   );
 }

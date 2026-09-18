@@ -1,4 +1,7 @@
+import { getSiteContent } from "@/data/siteContent";
 import { buildMetadata } from "@/lib/metadata";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = buildMetadata({
   title: "About",
@@ -6,7 +9,9 @@ export const metadata = buildMetadata({
   path: "/about",
 });
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const body = await getSiteContent("about_body");
+
   return (
     <section className="container-page max-w-2xl py-16">
       <p className="label-eyebrow">About</p>
@@ -15,21 +20,9 @@ export default function AboutPage() {
       </h1>
 
       <div className="mt-8 space-y-5 text-base leading-relaxed text-paper-dim">
-        <p>
-          Research With Sabbir is an independent research practice focused on
-          Bangladesh and emerging markets — covering FMCG, commodities,
-          competitive dynamics and the business decisions that depend on
-          understanding a market clearly.
-        </p>
-        <p>
-          The practice is built on one rule: no verified source, no outcome.
-          Findings are grounded in real data and disclosed methodology, and
-          anything illustrative or in development is labeled as such.
-        </p>
-        <p>
-          Replace this paragraph with more detail on your background,
-          experience and what led you to start Research With Sabbir.
-        </p>
+        {body.split("\n\n").map((para, i) => (
+          <p key={i}>{para}</p>
+        ))}
       </div>
     </section>
   );
