@@ -44,3 +44,4 @@ export async function getInsightBySlug(
   if (error || !data) return undefined;
   return mapRow(data);
 }
+
