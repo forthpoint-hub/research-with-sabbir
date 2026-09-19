@@ -11,7 +11,7 @@ export const metadata = buildMetadata({
 });
 
 export default async function InsightsPage() {
-  const insights = await getAllInsights();
+  const { items: insights, error } = await getAllInsights();
 
   return (
     <section className="container-page py-16">
@@ -21,7 +21,9 @@ export default async function InsightsPage() {
       </h1>
 
       <div className="mt-10 max-w-prose">
-        {insights.length === 0 ? (
+        {error ? (
+          <p className="text-sm text-alert">Couldn&apos;t load insights: {error}</p>
+        ) : insights.length === 0 ? (
           <p className="text-sm text-paper-dim">
             No insights yet — add them in the admin dashboard.
           </p>

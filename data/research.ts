@@ -24,14 +24,20 @@ function mapRow(row: any): ResearchItem {
   };
 }
 
-export async function getAllResearch(): Promise<ResearchItem[]> {
+export async function getAllResearch(): Promise<{
+  items: ResearchItem[];
+  error: string | null;
+}> {
   const { data, error } = await supabase
     .from("research")
     .select("*")
     .order("publication_date", { ascending: false });
 
-  if (error || !data) return [];
-  return data.map(mapRow);
+  if (error) {
+    console.error("getAllResearch:", error.message);
+    return { items: [], error: error.message };
+  }
+  return { items: (data ?? []).map(mapRow), error: null };
 }
 
 export async function getResearchBySlug(

@@ -4,7 +4,11 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
 const KNOWN_KEYS: { key: string; label: string; usedOn: string }[] = [
+  { key: "home_hero_heading", label: "Homepage hero heading", usedOn: "/" },
+  { key: "home_hero_subtext", label: "Homepage hero subtext", usedOn: "/" },
   { key: "about_body", label: "About page text", usedOn: "/about" },
+  { key: "markets_body", label: "Markets page text", usedOn: "/markets" },
+  { key: "contact_intro", label: "Contact page intro", usedOn: "/contact" },
 ];
 
 export default function ContentEditor() {

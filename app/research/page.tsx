@@ -12,7 +12,7 @@ export const metadata = buildMetadata({
 });
 
 export default async function ResearchLibraryPage() {
-  const research = await getAllResearch();
+  const { items: research, error } = await getAllResearch();
 
   return (
     <section className="container-page py-16">
@@ -26,7 +26,11 @@ export default async function ResearchLibraryPage() {
       </p>
 
       <div className="mt-10">
-        <ResearchFilters items={research} />
+        {error ? (
+          <p className="text-sm text-alert">Couldn&apos;t load research: {error}</p>
+        ) : (
+          <ResearchFilters items={research} />
+        )}
       </div>
     </section>
   );

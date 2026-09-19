@@ -16,14 +16,20 @@ function mapRow(row: any): Insight {
   };
 }
 
-export async function getAllInsights(): Promise<Insight[]> {
+export async function getAllInsights(): Promise<{
+  items: Insight[];
+  error: string | null;
+}> {
   const { data, error } = await supabase
     .from("insights")
     .select("*")
     .order("publication_date", { ascending: false });
 
-  if (error || !data) return [];
-  return data.map(mapRow);
+  if (error) {
+    console.error("getAllInsights:", error.message);
+    return { items: [], error: error.message };
+  }
+  return { items: (data ?? []).map(mapRow), error: null };
 }
 
 export async function getInsightBySlug(

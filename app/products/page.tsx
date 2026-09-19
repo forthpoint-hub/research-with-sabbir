@@ -12,7 +12,7 @@ export const metadata = buildMetadata({
 });
 
 export default async function ProductsPage() {
-  const products = await getAllProducts();
+  const { items: products, error } = await getAllProducts();
 
   return (
     <section className="container-page py-16">
@@ -25,7 +25,11 @@ export default async function ProductsPage() {
         buy and use. Checkout happens outside this site.
       </p>
 
-      {products.length === 0 ? (
+      {error ? (
+        <p className="mt-10 text-sm text-alert">
+          Couldn&apos;t load products: {error}
+        </p>
+      ) : products.length === 0 ? (
         <p className="mt-10 text-sm text-paper-dim">
           No products yet — add them in the admin dashboard.
         </p>

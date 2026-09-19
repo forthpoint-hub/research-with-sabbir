@@ -1,5 +1,8 @@
 import ContactForm from "@/components/ContactForm";
+import { getSiteContent } from "@/data/siteContent";
 import { buildMetadata } from "@/lib/metadata";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = buildMetadata({
   title: "Contact",
@@ -7,7 +10,9 @@ export const metadata = buildMetadata({
   path: "/contact",
 });
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const intro = await getSiteContent("contact_intro");
+
   return (
     <section className="container-page max-w-2xl py-16">
       <p className="label-eyebrow">Work With Me</p>
@@ -15,8 +20,8 @@ export default function ContactPage() {
         Start a research project
       </h1>
       <p className="mt-4 text-sm leading-relaxed text-paper-dim">
-        Tell me about the question behind your decision, and I&apos;ll get
-        back to you about scope and timeline.
+        {intro ||
+          "Tell me about the question behind your decision, and I'll get back to you about scope and timeline."}
       </p>
 
       <ContactForm />

@@ -1,4 +1,7 @@
+import { getSiteContent } from "@/data/siteContent";
 import { buildMetadata } from "@/lib/metadata";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = buildMetadata({
   title: "Bangladesh Market Intelligence",
@@ -7,7 +10,9 @@ export const metadata = buildMetadata({
   path: "/markets",
 });
 
-export default function MarketsPage() {
+export default async function MarketsPage() {
+  const body = await getSiteContent("markets_body");
+
   return (
     <section className="container-page max-w-2xl py-16">
       <p className="label-eyebrow">Market Intelligence</p>
@@ -16,9 +21,8 @@ export default function MarketsPage() {
       </h1>
 
       <p className="mt-6 text-base leading-relaxed text-paper-dim">
-        This page will host a live commodity and market intelligence
-        dashboard covering price direction, supply conditions and trader
-        sentiment for the goods that move Bangladesh&apos;s cost of living.
+        {body ||
+          "This page will host a live commodity and market intelligence dashboard covering price direction, supply conditions and trader sentiment for the goods that move Bangladesh's cost of living."}
       </p>
 
       <div className="mt-8 border border-line bg-ink-soft p-6">

@@ -23,7 +23,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getAllPublishedPages(),
   ]);
 
-  const researchRoutes = research.map((item) => ({
+  const researchRoutes = research.items.map((item) => ({
     url: `${SITE_URL}/research/${item.slug}`,
     lastModified: item.publicationDate || new Date().toISOString(),
   }));

@@ -15,14 +15,20 @@ function mapRow(row: any): Product {
   };
 }
 
-export async function getAllProducts(): Promise<Product[]> {
+export async function getAllProducts(): Promise<{
+  items: Product[];
+  error: string | null;
+}> {
   const { data, error } = await supabase
     .from("products")
     .select("*")
     .order("created_at", { ascending: false });
 
-  if (error || !data) return [];
-  return data.map(mapRow);
+  if (error) {
+    console.error("getAllProducts:", error.message);
+    return { items: [], error: error.message };
+  }
+  return { items: (data ?? []).map(mapRow), error: null };
 }
 
 export async function getProductBySlug(

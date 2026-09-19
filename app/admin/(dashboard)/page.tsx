@@ -9,6 +9,7 @@ export default function DashboardOverview() {
     research: null,
     products: null,
     insights: null,
+    services: null,
     pages: null,
     inquiries: null,
   });
@@ -17,7 +18,7 @@ export default function DashboardOverview() {
 
   useEffect(() => {
     async function load() {
-      const [research, products, insights, pages, inquiries] =
+      const [research, products, insights, pages, inquiries, services] =
         await Promise.all([
           supabase.from("research").select("*", { count: "exact", head: true }),
           supabase.from("products").select("*", { count: "exact", head: true }),
@@ -26,12 +27,14 @@ export default function DashboardOverview() {
           supabase
             .from("contact_submissions")
             .select("*", { count: "exact", head: true }),
+          supabase.from("services").select("*", { count: "exact", head: true }),
         ]);
 
       setCounts({
         research: research.count ?? 0,
         products: products.count ?? 0,
         insights: insights.count ?? 0,
+        services: services.count ?? 0,
         pages: pages.count ?? 0,
         inquiries: inquiries.count ?? 0,
       });
@@ -58,6 +61,7 @@ export default function DashboardOverview() {
     { label: "Research reports", value: counts.research, href: "/admin/research" },
     { label: "Products", value: counts.products, href: "/admin/products" },
     { label: "Insights", value: counts.insights, href: "/admin/insights" },
+    { label: "Services", value: counts.services, href: "/admin/services" },
     { label: "Custom pages", value: counts.pages, href: "/admin/pages" },
     { label: "Inquiries", value: counts.inquiries, href: "/admin/inquiries" },
     { label: "Views today", value: viewsToday, href: "/admin/analytics" },

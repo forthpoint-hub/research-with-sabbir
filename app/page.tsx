@@ -14,10 +14,13 @@ export const metadata = buildMetadata({
 });
 
 export default async function HomePage() {
-  const [research, insights] = await Promise.all([
-    getAllResearch(),
-    getAllInsights(),
-  ]);
+  const [{ items: research }, { items: insights }, heroHeading, heroSubtext] =
+    await Promise.all([
+      getAllResearch(),
+      getAllInsights(),
+      getSiteContent("home_hero_heading"),
+      getSiteContent("home_hero_subtext"),
+    ]);
 
   const featuredResearch = research.filter((r) => r.featured).slice(0, 4);
   const latestInsights = insights.slice(0, 3);
@@ -28,12 +31,11 @@ export default async function HomePage() {
       <section className="container-page pt-16 pb-20 sm:pt-24 sm:pb-28">
         <p className="label-eyebrow">Independent Market &amp; Business Research</p>
         <h1 className="mt-4 max-w-3xl font-serif text-4xl leading-tight text-paper sm:text-5xl">
-          Research that turns markets into intelligence.
+          {heroHeading || "Research that turns markets into intelligence."}
         </h1>
         <p className="mt-6 max-w-prose text-base leading-relaxed text-paper-dim">
-          Independent research and analysis on Bangladesh, emerging markets,
-          commodities, FMCG and business strategy — built for people who need
-          clarity before making a decision.
+          {heroSubtext ||
+            "Independent research and analysis on Bangladesh, emerging markets, commodities, FMCG and business strategy — built for people who need clarity before making a decision."}
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Button href="/research">Explore research</Button>
@@ -42,6 +44,7 @@ export default async function HomePage() {
           </Button>
         </div>
       </section>
+
 
       {/* Featured research */}
       <section className="rule container-page py-16">

@@ -32,7 +32,7 @@ export default async function ResearchDetailPage({
   if (!item) return notFound();
 
   const allResearch = await getAllResearch();
-  const related = allResearch
+  const related = allResearch.items
     .filter((r) => r.slug !== item.slug && r.category === item.category)
     .slice(0, 3);
 
